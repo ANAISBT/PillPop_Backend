@@ -175,8 +175,8 @@ app.post('/addDoctor', async (req, res) => {
 
         res.send('Doctor insertado exitosamente.');
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Error al insertar el doctor.');
+            console.error('Error al insertar el doctor:', err.message); // Mejor manejo de errores
+            res.status(500).send('Error al insertar el doctor.');  
     }
 });
 
@@ -212,8 +212,39 @@ app.get('/getDoctor/:doctorID', async (req, res) => {
     }
 });
 
+// Ruta para el login de doctor
+app.post('/loginDoctor', async (req, res) => {
+    const { p_dni, p_contrasena } = req.body;
+
+    try {
+        const query = `
+            SELECT id
+            FROM usuario_Doctor
+            WHERE dni = $1 AND contrasena = $2
+        `;
+
+        const result = await pool.query(query, [p_dni, p_contrasena]);
+
+        if (result.rows.length > 0) {
+            const v_id = result.rows[0].id; // Obtiene el id del doctor
+            res.json({
+                mensaje: 'Login exitoso',
+                id: v_id
+            });
+        } else {
+            res.json({
+                mensaje: 'Credenciales incorrectas'
+            });
+        }
+    } catch (err) {
+        console.error('Error al iniciar sesión:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+
 app.get('/',(req,res)=> {
-    res.send('Hello Word')
+    res.send('API Pillpop')
 })
 
 app.get('/ping', async (req, res) => {
