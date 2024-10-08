@@ -4,12 +4,13 @@ import { config } from 'dotenv';
 
 config()
 
-const app = express()
+const app = express();
+app.use(express.json());
 
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: true
-})
+});
 
 // Ruta para crear todas las tablas
 app.get('/createTables', async (req, res) => {
