@@ -1,15 +1,17 @@
 import express from 'express'; 
 import pg from 'pg';
-import { connectionString } from 'pg/lib/defaults';
 import { config } from 'dotenv';
 
 config()
 
 const app = express()
 
+// Definir un puerto para nuestro servidor
+const port = 3000 || process.env.PORT;
+
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl:true
+    ssl: true
 })
 
 app.get('/',(req,res)=> {
