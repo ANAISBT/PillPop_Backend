@@ -99,6 +99,41 @@ app.get('/createTables', async (req, res) => {
     }
 });
 
+// Ruta para insertar datos en las tablas
+app.get('/insertDataInicial', async (req, res) => {
+    try {
+        const query = `
+            -- Insertar datos en la tabla 'sexo'
+            INSERT INTO sexo (nombre) VALUES
+            ('Masculino'),
+            ('Femenino'),
+            ('Otro');
+
+            -- Insertar datos en la tabla 'especialidades'
+            INSERT INTO especialidades (nombre) VALUES
+            ('Cardiología'),
+            ('Neurología'),
+            ('Pediatría'),
+            ('Dermatología');
+
+            -- Insertar datos en la tabla 'frecuencias'
+            INSERT INTO frecuencias (tipo) VALUES
+            ('Cada 4 horas'),
+            ('Cada 8 horas'),
+            ('Cada 12 horas'),
+            ('Cada 24 horas'),
+            ('Cada 48 horas');
+        `;
+
+        // Ejecutar la consulta de inserción
+        await pool.query(query);
+        res.send('Datos insertados exitosamente en las tablas.');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al insertar los datos.');
+    }
+});
+
 app.get('/',(req,res)=> {
     res.send('Hello Word')
 })
