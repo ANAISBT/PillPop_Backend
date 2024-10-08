@@ -220,30 +220,33 @@ app.post('/loginDoctor', async (req, res) => {
     const { p_dni, p_contrasena } = req.body;
 
     try {
-        const query = `
-            SELECT id
-            FROM usuario_Doctor
-            WHERE dni = ? AND contrasena = ?
-        `;
+        const query = `CALL LoginUsuarioDoctor(?, ?)`;
 
+        // Ejecutar el procedimiento almacenado con los parámetros
         const [result] = await pool.query(query, [p_dni, p_contrasena]);
 
-        if (result.length > 0) {
-            const v_id = result[0].id; // Obtiene el id del doctor
-            res.json({
-                mensaje: 'Login exitoso',
-                id: v_id
-            });
+        // Verificar si el resultado contiene un mensaje de éxito o error
+        if (result && result[0].length > 0) {
+            const loginResult = result[0][0]; // Obtener la primera fila de resultados
+            if (loginResult.mensaje === 'Login exitoso') {
+                res.json({
+                    mensaje: loginResult.mensaje,
+                    id: loginResult.v_id // El ID del doctor devuelto
+                });
+            } else {
+                res.json({
+                    mensaje: loginResult.mensaje // Mensaje de credenciales incorrectas
+                });
+            }
         } else {
-            res.json({
-                mensaje: 'Credenciales incorrectas'
-            });
+            res.status(500).send('Error al procesar la solicitud.');
         }
     } catch (err) {
         console.error('Error al iniciar sesión:', err.message);
         res.status(500).send('Error al procesar la solicitud.');
     }
 });
+
 
 app.get('/', (req, res) => {
     res.send('API Pillpop');
