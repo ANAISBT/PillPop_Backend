@@ -134,6 +134,18 @@ app.get('/insertDataInicial', async (req, res) => {
     }
 });
 
+// Ruta para hacer un SELECT de la tabla 'sexo'
+app.get('/getDataSexo', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM sexo';
+        const result = await pool.query(query);
+        res.json(result.rows); // Enviar los datos en formato JSON
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al obtener los datos de la tabla sexo.');
+    }
+});
+
 app.get('/',(req,res)=> {
     res.send('Hello Word')
 })
