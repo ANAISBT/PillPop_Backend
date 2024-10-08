@@ -128,6 +128,25 @@ app.post('/loginDoctor', async (req, res) => {
 });
 
 
+// Ruta para editar la contraseña de un doctor
+app.put('/editarContrasenaDoctor/:id', async (req, res) => {
+    const { id } = req.params; // Obtiene el id del doctor desde los parámetros de la URL
+    const { p_contrasena } = req.body; // Obtiene la nueva contraseña del cuerpo de la solicitud
+
+    try {
+        const query = `CALL EditarContrasenaDoctor(?, ?)`;
+
+        // Ejecutar el procedimiento almacenado con los parámetros
+        await pool.query(query, [id, p_contrasena]);
+
+        res.send('Contraseña actualizada exitosamente.');
+    } catch (err) {
+        console.error('Error al editar la contraseña:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+
 app.get('/', (req, res) => {
     res.send('API Pillpop');
 });
