@@ -6,9 +6,6 @@ config()
 
 const app = express()
 
-// Definir un puerto para nuestro servidor
-const port = 3000 || process.env.PORT;
-
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: true
@@ -23,7 +20,6 @@ app.get('/ping', async (req, res) => {
     return res.json(result.rows[0])
   });
 
-// Iniciar el servidor
-app.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
-  });
+app.listen(3000)
+console.log('Server on port',3000)
+
