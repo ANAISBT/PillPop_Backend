@@ -146,6 +146,71 @@ app.get('/getDataSexo', async (req, res) => {
     }
 });
 
+// Ruta para insertar un nuevo doctor en la tabla usuario_Doctor
+app.post('/addDoctor', async (req, res) => {
+    const { p_nombreCompleto, p_sexo_id, p_especialidad_id, p_dni, p_correoElectronico, p_contrasena } = req.body;
+
+    try {
+        const query = `
+            INSERT INTO usuario_Doctor (
+                nombreCompleto, 
+                sexo_id, 
+                especialidad_id, 
+                dni, 
+                correoElectronico, 
+                contrasena
+            ) VALUES ($1, $2, $3, $4, $5, $6)
+        `;
+
+        // Ejecutar la consulta con los parámetros
+        await pool.query(query, [
+            p_nombreCompleto, 
+            p_sexo_id, 
+            p_especialidad_id, 
+            p_dni, 
+            p_correoElectronico, 
+            p_contrasena
+        ]);
+
+        res.send('Doctor insertado exitosamente.');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al insertar el doctor.');
+    }
+});
+
+// Ruta para obtener los datos de un doctor por su id
+app.get('/getDoctor/:doctorID', async (req, res) => {
+    const { doctorID } = req.params;
+
+    try {
+        const query = `
+            SELECT 
+                id, 
+                nombreCompleto, 
+                sexo_id, 
+                especialidad_id, 
+                dni, 
+                correoElectronico
+            FROM 
+                usuario_Doctor
+            WHERE 
+                id = $1
+        `;
+
+        const result = await pool.query(query, [doctorID]);
+
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]); // Enviar los datos del doctor si se encuentra
+        } else {
+            res.status(404).send('Doctor no encontrado.');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al obtener el doctor.');
+    }
+});
+
 app.get('/',(req,res)=> {
     res.send('Hello Word')
 })
