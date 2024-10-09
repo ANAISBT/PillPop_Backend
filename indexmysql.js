@@ -318,6 +318,99 @@ app.get('/obtenerTomasXPacienteFecha/:pacienteId/:fechaHoy', async (req, res) =>
     }
 });
 
+// Ruta para editar los datos del doctor
+app.put('/editarDoctor/:id', async (req, res) => {
+    const { id } = req.params;
+    const { p_nombreCompleto, p_sexo_id, p_especialidad_id, p_dni, p_correoElectronico } = req.body;
+
+    try {
+        const query = `CALL EditarDoctor(?, ?, ?, ?, ?, ?)`;
+        await pool.query(query, [id, p_nombreCompleto, p_sexo_id, p_especialidad_id, p_dni, p_correoElectronico]);
+
+        res.json({
+            mensaje: 'Datos del doctor actualizados exitosamente.'
+        });
+    } catch (err) {
+        console.error('Error al actualizar los datos del doctor:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+
+// Ruta para editar la contraseña de un doctor
+app.put('/editarContrasenaDoctor/:id', async (req, res) => {
+    const { id } = req.params; // Obtiene el id del doctor desde los parámetros de la URL
+    const { p_contrasena } = req.body; // Obtiene la nueva contraseña del cuerpo de la solicitud
+
+    try {
+        const query = `CALL EditarContrasenaDoctor(?, ?)`;
+
+        // Ejecutar el procedimiento almacenado con los parámetros
+        await pool.query(query, [id, p_contrasena]);
+
+        res.send('Contraseña actualizada exitosamente.');
+    } catch (err) {
+        console.error('Error al editar la contraseña:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+// Ruta para obtener los datos del paciente por ID
+app.get('/paciente/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const query = `CALL ObtenerDatosPacientePorId(?)`;
+        const [result] = await pool.query(query, [id]);
+
+        if (result.length > 0) {
+            res.json(result[0]); // Devuelve los datos del paciente
+        } else {
+            res.status(404).json({
+                mensaje: 'Paciente no encontrado.'
+            });
+        }
+    } catch (err) {
+        console.error('Error al obtener los datos del paciente:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+// Ruta para editar los datos del paciente
+app.put('/editarpaciente/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nombreCompleto, sexo_id, edad, dni, correoElectronico } = req.body;
+
+    try {
+        const query = `CALL EditarDatosPaciente(?, ?, ?, ?, ?, ?)`;
+        await pool.query(query, [id, nombreCompleto, sexo_id, edad, dni, correoElectronico]);
+
+        res.json({
+            mensaje: 'Datos del paciente actualizados con éxito.'
+        });
+    } catch (err) {
+        console.error('Error al editar los datos del paciente:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+// Ruta para editar la contraseña del paciente
+app.put('/editarContrasenaPaciente/:id', async (req, res) => {
+    const { id } = req.params;
+    const { contrasena } = req.body;
+
+    try {
+        const query = `CALL EditarContrasenaPaciente(?, ?)`;
+        await pool.query(query, [id, contrasena]);
+
+        res.json({
+            mensaje: 'Contraseña del paciente actualizada con éxito.'
+        });
+    } catch (err) {
+        console.error('Error al editar la contraseña del paciente:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
 
 
 
