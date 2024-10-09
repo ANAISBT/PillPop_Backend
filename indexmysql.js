@@ -31,6 +31,29 @@ app.get('/getDataSexo', async (req, res) => {
 });
 
 
+// Ruta para hacer un SELECT de la tabla 'frecuencias'
+app.get('/getDataFrecuencias', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM frecuencias';
+        const [result] = await pool.query(query);
+        res.json(result); // Enviar los datos en formato JSON
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al obtener los datos de la tabla frecuencias.');
+    }
+});
+
+// Ruta para hacer un SELECT de la tabla 'especialidades'
+app.get('/getDataEspecialidades', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM especialidades';
+        const [result] = await pool.query(query);
+        res.json(result); // Enviar los datos en formato JSON
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al obtener los datos de la tabla especialidades.');
+    }
+});
 
 
 
