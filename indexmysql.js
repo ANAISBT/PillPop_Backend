@@ -172,7 +172,11 @@ app.post('/editarPrescripcion', async (req, res) => {
 });
 
 app.delete('/eliminarPrescripcion', async (req, res) => {
-    const { id } = req.body; // Obtener el ID de la prescripción de los parámetros de la ruta
+    const { id } = req.query; // Obtener el ID de la prescripción de los parámetros de la URL
+
+    if (!id) {
+        return res.status(400).json({ mensaje: 'Falta el ID de la prescripción.' });
+    }
 
     try {
         const query = `CALL eliminarPrescripcion(?)`; // Llamar al procedimiento almacenado
@@ -193,6 +197,7 @@ app.delete('/eliminarPrescripcion', async (req, res) => {
         }
     }
 });
+
 
 app.post('/insertarPastillas', async (req, res) => {
     const {nombre,cantidad,dosis,cantidad_sobrante,frecuencia_id,fecha_inicio,
