@@ -1,9 +1,8 @@
 {
   "name": "pillpop_backend",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "start": "node indexmysql.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,8 +13,9 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.21.0",
+    "express": "^4.21.1",
     "mysql2": "^3.11.3",
     "pg": "^8.13.0"
-  }
+  },
+  "description": ""
 }
