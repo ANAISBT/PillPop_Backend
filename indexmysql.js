@@ -255,6 +255,33 @@ app.post('/loginDoctor', async (req, res) => {
     }
 });
 
+// Ruta para realizar el login de un usuario paciente
+app.post('/loginPaciente', async (req, res) => {
+    const { p_dni, p_contrasena } = req.body;
+
+    try {
+        const query = `CALL LoginUsuarioPaciente(?, ?)`;
+
+        // Ejecutar la consulta con los parámetros
+        const [result] = await pool.query(query, [p_dni, p_contrasena]);
+
+        // Revisar el mensaje de respuesta del procedimiento
+        if (result.length > 0 && result[0][0].mensaje === 'Login exitoso') {
+            const { v_id } = result[0][0];
+            res.json({
+                mensaje: 'Login exitoso',
+                id: v_id
+            });
+        } else {
+            res.status(401).json({ mensaje: 'Credenciales incorrectas' });
+        }
+    } catch (err) {
+        console.error('Error durante el login:', err.message);
+        res.status(500).send('Error durante el login.');
+    }
+});
+
+
 app.get('/obtenerDatosDoctor/:id', async (req, res) => {
     const doctorID = req.params.id;
 
