@@ -218,22 +218,28 @@ app.post('/insertarPastillas', async (req, res) => {
 });
 
 app.post('/insertarDoctor', async (req, res) => {
-    const {nombreCompleto,sexo_id,especialidad_id,dni,correoElectronico,contrasena} = req.body;
+    const { nombreCompleto, sexo_id, especialidad_id, dni, correoElectronico, contrasena } = req.body;
 
     try {
-        const query = `CALL InsertarUsuarioDoctor(?, ?, ?, ?, ?, ?)`;
+        const query = `CALL InsertarUsuarioDoctor(?, ?, ?, ?, ?, ?, @p_idUsuarioDoctor);`;
 
         // Ejecutar el procedimiento almacenado con los parámetros correspondientes
         await pool.query(query, [nombreCompleto, sexo_id, especialidad_id, dni, correoElectronico, contrasena]);
 
+        // Recuperar el id del doctor insertado
+        const result = await pool.query('SELECT @p_idUsuarioDoctor AS idUsuarioDoctor');
+        const idUsuarioDoctor = result[0][0].idUsuarioDoctor;
+
         res.json({
             mensaje: 'Doctor insertado exitosamente.',
+            idUsuarioDoctor: idUsuarioDoctor
         });
     } catch (err) {
         console.error('Error al insertar el doctor:', err.message);
         res.status(500).send('Error al procesar la solicitud.');
     }
 });
+
 
 app.post('/loginDoctor', async (req, res) => {
     const { dni, contrasena } = req.body;
