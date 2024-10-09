@@ -327,8 +327,6 @@ app.get('/obtenerDatosToma', async (req, res) => {
 app.get('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
     
     const {doctorId,fechaHoy} = req.body;
-    doctorId = parseInt(req.params.doctorId);
-    fechaHoy = req.params.fechaHoy; // Asegúrate de que la fecha esté en formato YYYY-MM-DD
     
     try {
         const query = `CALL ObtenerPrescripcionesPorDoctorYFecha(?, ?)`;
@@ -351,8 +349,6 @@ app.get('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
 app.get('/obtenerTomasXPacienteFecha', async (req, res) => {
     
     const {pacienteId,fechaHoy} = req.body;
-    pacienteId = parseInt(req.params.pacienteId);
-    fechaHoy = req.params.fechaHoy; // Asegúrate de que la fecha esté en formato YYYY-MM-DD
 
     try {
         const query = `CALL ObtenerTomasPorPacienteYFecha(?, ?)`;
