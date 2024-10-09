@@ -358,8 +358,7 @@ app.post('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
 });
 
 app.post('/obtenerTomasXPacienteFecha', async (req, res) => {
-    
-    const {pacienteId,fechaHoy} = req.body;
+    const { pacienteId, fechaHoy } = req.body;
 
     try {
         const query = `CALL ObtenerTomasPorPacienteYFecha(?, ?)`;
@@ -368,8 +367,8 @@ app.post('/obtenerTomasXPacienteFecha', async (req, res) => {
         const [rows] = await pool.query(query, [pacienteId, fechaHoy]);
 
         if (rows[0].length > 0) {
-            // Retornar las tomas encontradas
-            res.json(rows[0]);
+            // Retornar las tomas encontradas en el formato deseado
+            res.json({ medicamentos: rows[0] });
         } else {
             res.status(404).json({ mensaje: 'No se encontraron tomas para el paciente en la fecha especificada' });
         }
@@ -378,6 +377,7 @@ app.post('/obtenerTomasXPacienteFecha', async (req, res) => {
         res.status(500).send('Error al procesar la solicitud.');
     }
 });
+
 
 // Ruta para editar los datos del doctor
 app.put('/editarDoctor/:id', async (req, res) => {
