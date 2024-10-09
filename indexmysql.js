@@ -324,7 +324,7 @@ app.get('/obtenerDatosToma', async (req, res) => {
     }
 });
 
-app.get('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
+app.post('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
     
     const {doctorId,fechaHoy} = req.body;
     
