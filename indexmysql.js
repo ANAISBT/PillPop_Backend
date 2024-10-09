@@ -171,8 +171,8 @@ app.post('/editarPrescripcion', async (req, res) => {
     }
 });
 
-app.delete('/eliminarPrescripcion/:id', async (req, res) => {
-    const { id } = req.params; // Obtener el ID de la prescripción de los parámetros de la ruta
+app.delete('/eliminarPrescripcion', async (req, res) => {
+    const { id } = req.body; // Obtener el ID de la prescripción de los parámetros de la ruta
 
     try {
         const query = `CALL eliminarPrescripcion(?)`; // Llamar al procedimiento almacenado
@@ -282,14 +282,13 @@ app.post('/loginPaciente', async (req, res) => {
 });
 
 
-app.get('/obtenerDatosDoctor/:id', async (req, res) => {
-    const doctorID = req.params.id;
-
+app.get('/obtenerDatosDoctor', async (req, res) => {
+    const {id} = req.body;
     try {
         const query = `CALL obtenerDatosDoctorPorId(?)`;
 
         // Ejecutar el procedimiento almacenado con el parámetro correspondiente
-        const [rows] = await pool.query(query, [doctorID]);
+        const [rows] = await pool.query(query, [id]);
 
         if (rows[0].length > 0) {
             // Retornar los datos del doctor
@@ -303,14 +302,15 @@ app.get('/obtenerDatosDoctor/:id', async (req, res) => {
     }
 });
 
-app.get('/obtenerDatosToma/:id', async (req, res) => {
-    const tomaID = req.params.id;
+app.get('/obtenerDatosToma', async (req, res) => {
+
+    const {id} = req.body;
 
     try {
         const query = `CALL obtenerDatosTomaPorId(?)`;
 
         // Ejecutar el procedimiento almacenado con el parámetro correspondiente
-        const [rows] = await pool.query(query, [tomaID]);
+        const [rows] = await pool.query(query, [id]);
 
         if (rows[0].length > 0) {
             // Retornar los datos de la toma
@@ -324,10 +324,12 @@ app.get('/obtenerDatosToma/:id', async (req, res) => {
     }
 });
 
-app.get('/obtenerPrescripcionesXDoctorFecha/:doctorId/:fechaHoy', async (req, res) => {
-    const doctorId = parseInt(req.params.doctorId);
-    const fechaHoy = req.params.fechaHoy; // Asegúrate de que la fecha esté en formato YYYY-MM-DD
-
+app.get('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
+    
+    const {doctorId,fechaHoy} = req.body;
+    doctorId = parseInt(req.params.doctorId);
+    fechaHoy = req.params.fechaHoy; // Asegúrate de que la fecha esté en formato YYYY-MM-DD
+    
     try {
         const query = `CALL ObtenerPrescripcionesPorDoctorYFecha(?, ?)`;
 
@@ -346,9 +348,11 @@ app.get('/obtenerPrescripcionesXDoctorFecha/:doctorId/:fechaHoy', async (req, re
     }
 });
 
-app.get('/obtenerTomasXPacienteFecha/:pacienteId/:fechaHoy', async (req, res) => {
-    const pacienteId = parseInt(req.params.pacienteId);
-    const fechaHoy = req.params.fechaHoy; // Asegúrate de que la fecha esté en formato YYYY-MM-DD
+app.get('/obtenerTomasXPacienteFecha', async (req, res) => {
+    
+    const {pacienteId,fechaHoy} = req.body;
+    pacienteId = parseInt(req.params.pacienteId);
+    fechaHoy = req.params.fechaHoy; // Asegúrate de que la fecha esté en formato YYYY-MM-DD
 
     try {
         const query = `CALL ObtenerTomasPorPacienteYFecha(?, ?)`;
