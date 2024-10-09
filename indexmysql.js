@@ -357,7 +357,7 @@ app.post('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
     }
 });
 
-app.get('/obtenerTomasXPacienteFecha', async (req, res) => {
+app.post('/obtenerTomasXPacienteFecha', async (req, res) => {
     
     const {pacienteId,fechaHoy} = req.body;
 
