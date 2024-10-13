@@ -325,7 +325,7 @@ app.post('/obtenerDatosPacientePorDNI', async (req, res) => {
             // Retornar los datos del paciente
             res.json(rows[0][0]);
         } else {
-            res.status(404).json({ mensaje: 'Paciente no encontrado' }); // Cambiar 'Doctor' por 'Paciente'
+            res.status(200).json({ mensaje: 'Paciente no encontrado' }); // Cambiar 'Doctor' por 'Paciente'
         }
     } catch (err) {
         console.error('Error al obtener datos del paciente:', err.message); // Cambiar 'doctor' por 'paciente'
