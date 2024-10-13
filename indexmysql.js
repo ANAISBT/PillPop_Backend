@@ -255,6 +255,25 @@ app.post('/loginDoctor', async (req, res) => {
     }
 });
 
+// Ruta para realizar el register de un usuario paciente
+app.post('/insertarPaciente', async (req, res) => {
+    const {nombreCompleto,sexo_id,edad,dni,correoElectronico,contrasena} = req.body;
+
+    try {
+        const query = `CALL InsertarUsuarioPaciente(?, ?, ?, ?, ?, ?)`;
+
+        // Ejecutar el procedimiento almacenado con los parámetros correspondientes
+        await pool.query(query, [nombreCompleto, sexo_id, especialidad_id, dni, correoElectronico, contrasena]);
+
+        res.json({
+            mensaje: 'Paciente insertado exitosamente.',
+        });
+    } catch (err) {
+        console.error('Error al insertar el paciente:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
 // Ruta para realizar el login de un usuario paciente
 app.post('/loginPaciente', async (req, res) => {
     const { p_dni, p_contrasena } = req.body;
