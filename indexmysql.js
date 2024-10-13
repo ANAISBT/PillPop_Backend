@@ -387,6 +387,34 @@ app.post('/obtenerDatosPacientePorDNI', async (req, res) => {
     }
 });
 
+app.post('/obtenerDatosPrescripcion', async (req, res) => {
+
+    const { id } = req.body; // Asumiendo que el id de la prescripción se pasa en el cuerpo de la solicitud
+
+    try {
+        const query = `CALL obtenerDatosPrescripcionPorId(?)`;
+
+        // Ejecutar el procedimiento almacenado con el parámetro correspondiente
+        const [rows] = await pool.query(query, [id]);
+
+        if (rows.length > 0) {
+            const prescripcion = rows[0]; // Datos de la prescripción
+            const pastillas = rows[1]; // Pastillas asociadas a la prescripción
+
+            // Combina los datos de la prescripción y las pastillas en un solo objeto para devolver
+            res.json({
+                prescripcion: prescripcion[0],
+                pastillas: pastillas
+            });
+        } else {
+            res.status(404).json({ mensaje: 'Prescripción no encontrada' });
+        }
+    } catch (err) {
+        console.error('Error al obtener datos de la prescripción:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
 
 
 app.get('/obtenerDatosToma', async (req, res) => {
