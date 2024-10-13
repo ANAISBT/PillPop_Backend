@@ -328,7 +328,7 @@ app.post('/insertarPaciente', async (req, res) => {
         const query = `CALL InsertarUsuarioPaciente(?, ?, ?, ?, ?, ?)`;
 
         // Ejecutar el procedimiento almacenado con los parámetros correspondientes
-        await pool.query(query, [nombreCompleto, sexo_id, especialidad_id, dni, correoElectronico, contrasena]);
+        await pool.query(query, [nombreCompleto, sexo_id, edad, dni, correoElectronico, contrasena]);
 
         res.json({
             mensaje: 'Paciente insertado exitosamente.',
