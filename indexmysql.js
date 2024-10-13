@@ -315,11 +315,6 @@ app.get('/obtenerDatosDoctor', async (req, res) => {
 
 app.post('/obtenerDatosPacientePorDNI', async (req, res) => {
     const { dni } = req.body; // Cambiado de id a dni
-    // Validar que el DNI tenga exactamente 8 caracteres
-    if (!dni || dni.length !== 8) {
-        return res.status(400).json({ mensaje: 'El DNI debe tener exactamente 8 caracteres' });
-    }
-
     try {
         const query = `CALL ObtenerDatosPacientePorDni(?)`; // Asegúrate de que el nombre coincida con el procedimiento almacenado
 
