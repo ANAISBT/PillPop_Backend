@@ -198,6 +198,60 @@ app.delete('/eliminarPrescripcion', async (req, res) => {
     }
 });
 
+app.delete('/eliminarPastillaPorPrescripcion', async (req, res) => {
+    const { idPrescripcion } = req.query; // Obtener el ID de la prescripción de los parámetros de la URL
+
+    if (!idPrescripcion) {
+        return res.status(400).json({ mensaje: 'Falta el ID de la prescripción.' });
+    }
+
+    try {
+        const query = `CALL eliminar_pastilla_por_prescripcion(?)`; // Llamar al procedimiento almacenado
+
+        // Ejecutar el procedimiento almacenado con el ID de la prescripción
+        await pool.query(query, [idPrescripcion]);
+
+        res.json({
+            mensaje: 'Pastillas eliminadas exitosamente de la prescripción.',
+        });
+    } catch (err) {
+        console.error('Error al eliminar las pastillas:', err.message);
+        // Manejo de errores
+        if (err.code === 'ER_SIGNAL_SQLSTATE') {
+            res.status(400).json({ mensaje: err.message });
+        } else {
+            res.status(500).send('Error al procesar la solicitud.');
+        }
+    }
+});
+
+app.delete('/eliminarPastilla', async (req, res) => {
+    const { id } = req.query; // Obtener el ID de la pastilla de los parámetros de la URL
+
+    if (!id) {
+        return res.status(400).json({ mensaje: 'Falta el ID de la pastilla.' });
+    }
+
+    try {
+        const query = `CALL eliminar_pastilla_por_id(?)`; // Llamar al procedimiento almacenado
+
+        // Ejecutar el procedimiento almacenado con el ID de la pastilla
+        await pool.query(query, [id]);
+
+        res.json({
+            mensaje: 'Pastilla eliminada exitosamente.',
+        });
+    } catch (err) {
+        console.error('Error al eliminar la pastilla:', err.message);
+        // Manejo de errores
+        if (err.code === 'ER_SIGNAL_SQLSTATE') {
+            res.status(400).json({ mensaje: err.message });
+        } else {
+            res.status(500).send('Error al procesar la solicitud.');
+        }
+    }
+});
+
 
 app.post('/insertarPastillas', async (req, res) => {
     const {nombre,cantidad,dosis,cantidad_sobrante,frecuencia_id,fecha_inicio,
