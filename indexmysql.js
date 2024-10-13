@@ -313,6 +313,27 @@ app.get('/obtenerDatosDoctor', async (req, res) => {
     }
 });
 
+app.get('/obtenerDatosPacientePorDNI', async (req, res) => {
+    const { dni } = req.body; // Cambiado de id a dni
+    try {
+        const query = `CALL ObtenerDatosPacientePorDni(?)`; // Asegúrate de que el nombre coincida con el procedimiento almacenado
+
+        // Ejecutar el procedimiento almacenado con el parámetro correspondiente
+        const [rows] = await pool.query(query, [dni]); // Cambiar id por dni
+
+        if (rows[0].length > 0) {
+            // Retornar los datos del paciente
+            res.json(rows[0][0]);
+        } else {
+            res.status(404).json({ mensaje: 'Paciente no encontrado' }); // Cambiar 'Doctor' por 'Paciente'
+        }
+    } catch (err) {
+        console.error('Error al obtener datos del paciente:', err.message); // Cambiar 'doctor' por 'paciente'
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+
 app.get('/obtenerDatosToma', async (req, res) => {
 
     const {id} = req.body;
