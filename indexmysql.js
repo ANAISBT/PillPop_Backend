@@ -371,8 +371,8 @@ app.post('/loginPaciente', async (req, res) => {
 });
 
 
-app.get('/obtenerDatosDoctor', async (req, res) => {
-    const {id} = req.body;
+app.post('/obtenerDatosDoctor', async (req, res) => {
+    const { id } = req.body; // Asegúrate de que el ID se envíe en el cuerpo de la solicitud
     try {
         const query = `CALL obtenerDatosDoctorPorId(?)`;
 
@@ -390,6 +390,7 @@ app.get('/obtenerDatosDoctor', async (req, res) => {
         res.status(500).send('Error al procesar la solicitud.');
     }
 });
+
 
 app.post('/obtenerDatosPacientePorDNI', async (req, res) => {
     const { dni } = req.body; // Cambiado de id a dni
