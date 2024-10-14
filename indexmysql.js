@@ -439,7 +439,6 @@ app.post('/obtenerDatosPrescripcion', async (req, res) => {
     }
 });
 
-// Endpoint para obtener pacientes por doctor
 app.post('/ObtenerPacientesPorDoctor', async (req, res) => {
     const { doctor_id } = req.body;
 
@@ -450,16 +449,20 @@ app.post('/ObtenerPacientesPorDoctor', async (req, res) => {
     try {
         const [rows] = await pool.query('CALL ObtenerPacientesPorDoctor(?)', [doctor_id]);
 
-        if (rows.length === 0) {
+        // rows[0] contiene el conjunto de resultados de pacientes
+        const pacientes = rows[0]; // Extraemos solo el primer conjunto de resultados
+
+        if (pacientes.length === 0) {
             return res.status(404).json({ message: 'No se encontraron pacientes para el doctor especificado.' });
         }
 
-        res.json(rows);
+        res.json(pacientes); // Devuelve solo el conjunto de resultados de pacientes
     } catch (error) {
         console.error('Error al obtener pacientes:', error);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
+
 
 
 app.get('/obtenerDatosToma', async (req, res) => {
