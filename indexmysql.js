@@ -577,7 +577,7 @@ app.post('/obtenerTomasXPacienteFecha', async (req, res) => {
             // Retornar las tomas encontradas en el formato deseado
             res.json({ medicamentos: rows[0] });
         } else {
-            res.status(404).json({ mensaje: 'No se encontraron tomas para el paciente en la fecha especificada' });
+            res.status(200).json({ mensaje: 'No se encontraron tomas para el paciente en la fecha especificada' });
         }
     } catch (err) {
         console.error('Error al obtener tomas:', err.message);
