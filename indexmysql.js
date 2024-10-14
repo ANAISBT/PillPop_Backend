@@ -468,9 +468,9 @@ app.post('/ObtenerPacientesPorDoctor', async (req, res) => {
     }
 });
 
-// Endpoint para llamar al procedimiento almacenado con fecha única
-app.get('/reportefechaunica', (req, res) => {
-    const { fechaUnica, doctorId, pacienteId } = req.query;
+// Endpoint para llamar al procedimiento almacenado con fecha única (POST con req.body)
+app.post('/reportefechaunica', (req, res) => {
+    const { fechaUnica, doctorId, pacienteId } = req.body;
   
     if (!fechaUnica || !doctorId || !pacienteId) {
       return res.status(400).json({ error: 'Se requieren los parámetros fechaUnica, doctorId y pacienteId' });
@@ -486,9 +486,9 @@ app.get('/reportefechaunica', (req, res) => {
     });
   });
   
-  // Endpoint para llamar al procedimiento almacenado con rango de fechas
-  app.get('/reporteentrefechas', (req, res) => {
-    const { fechaInicio, fechaFin, doctorId, pacienteId } = req.query;
+  // Endpoint para llamar al procedimiento almacenado con rango de fechas (POST con req.body)
+  app.post('/reporteentrefechas', (req, res) => {
+    const { fechaInicio, fechaFin, doctorId, pacienteId } = req.body;
   
     if (!fechaInicio || !fechaFin || !doctorId || !pacienteId) {
       return res.status(400).json({ error: 'Se requieren los parámetros fechaInicio, fechaFin, doctorId y pacienteId' });
@@ -503,6 +503,7 @@ app.get('/reportefechaunica', (req, res) => {
       res.json(results);
     });
   });
+  
 
 
 app.get('/obtenerDatosToma', async (req, res) => {
