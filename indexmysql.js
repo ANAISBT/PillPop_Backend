@@ -657,7 +657,7 @@ app.get('/paciente/:id', async (req, res) => {
         if (result.length > 0) {
             res.json(result[0]); // Devuelve los datos del paciente
         } else {
-            res.status(404).json({
+            res.status(200).json({
                 mensaje: 'Paciente no encontrado.'
             });
         }
