@@ -55,8 +55,6 @@ app.get('/getDataEspecialidades', async (req, res) => {
     }
 });
 
-
-
 // Ruta para insertar un nuevo doctor en la tabla usuario_Doctor
 app.post('/addPaciente', async (req, res) => {
     const { p_nombreCompleto, p_sexo_id, p_edad, p_dni, p_correoElectronico, p_contrasena } = req.body;
@@ -310,7 +308,7 @@ app.post('/loginDoctor', async (req, res) => {
                 id: rows[0][0].id // Devuelve el ID del doctor
             });
         } else {
-            res.status(401).json({
+            res.status(200).json({
                 mensaje: rows[0][0].mensaje // Credenciales incorrectas
             });
         }
@@ -362,7 +360,7 @@ app.post('/loginPaciente', async (req, res) => {
                 id: v_id
             });
         } else {
-            res.status(401).json({ mensaje: 'Credenciales incorrectas' });
+            res.status(200).json({ mensaje: 'Credenciales incorrectas' });
         }
     } catch (err) {
         console.error('Error durante el login:', err.message);
