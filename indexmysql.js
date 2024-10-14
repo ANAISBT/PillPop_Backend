@@ -349,17 +349,22 @@ app.post('/loginPaciente', async (req, res) => {
     const { p_dni, p_contrasena } = req.body;
 
     try {
-        const query = `CALL LoginUsuarioPaciente(?, ?)`;
 
-        // Ejecutar la consulta con los parámetros
+        const query = `CALL LoginUsuarioPaciente(?, ?)`;
         const [result] = await pool.query(query, [p_dni, p_contrasena]);
+        console.log('Resultado del procedimiento:', JSON.stringify(result, null, 2));
 
         // Revisar el mensaje de respuesta del procedimiento
         if (result.length > 0 && result[0][0].mensaje === 'Login exitoso') {
-            const { v_id } = result[0][0];
+            const { v_id, nombreCompleto, sexo_id, edad, dni, correoElectronico } = result[0][0];
             res.json({
                 mensaje: 'Login exitoso',
-                id: v_id
+                id: v_id,
+                nombreCompleto,
+                sexo_id,
+                edad,
+                dni,
+                correoElectronico
             });
         } else {
             res.status(401).json({ mensaje: 'Credenciales incorrectas' });
@@ -487,12 +492,35 @@ app.post('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
 
 app.post('/obtenerTomasXPacienteFecha', async (req, res) => {
     const { pacienteId, fechaHoy } = req.body;
-
+    
     try {
         const query = `CALL ObtenerTomasPorPacienteYFecha(?, ?)`;
 
         // Ejecutar el procedimiento almacenado con los parámetros correspondientes
         const [rows] = await pool.query(query, [pacienteId, fechaHoy]);
+
+        if (rows[0].length > 0) {
+            // Retornar las tomas encontradas en el formato deseado
+            res.json({ medicamentos: rows[0] });
+        } else {
+            res.status(404).json({ mensaje: 'No se encontraron tomas para el paciente en la fecha especificada' });
+        }
+    } catch (err) {
+        console.error('Error al obtener tomas:', err.message);
+        res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+app.post('/obtenerTomasXPacienteHoy', async (req, res) => {
+    const { pacienteId } = req.body;
+    const fechaActual = new Date();
+    const fechaFormateada = fechaActual.toISOString().split('T')[0];
+    
+    try {
+        const query = `CALL ObtenerTomasPorPacienteYFecha(?, ?)`;
+
+        // Ejecutar el procedimiento almacenado con los parámetros correspondientes
+        const [rows] = await pool.query(query, [pacienteId, fechaFormateada]);
 
         if (rows[0].length > 0) {
             // Retornar las tomas encontradas en el formato deseado
