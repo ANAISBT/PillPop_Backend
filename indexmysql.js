@@ -55,8 +55,6 @@ app.get('/getDataEspecialidades', async (req, res) => {
     }
 });
 
-
-
 // Ruta para insertar un nuevo doctor en la tabla usuario_Doctor
 app.post('/addPaciente', async (req, res) => {
     const { p_nombreCompleto, p_sexo_id, p_edad, p_dni, p_correoElectronico, p_contrasena } = req.body;
@@ -310,7 +308,7 @@ app.post('/loginDoctor', async (req, res) => {
                 id: rows[0][0].id // Devuelve el ID del doctor
             });
         } else {
-            res.status(401).json({
+            res.status(200).json({
                 mensaje: rows[0][0].mensaje // Credenciales incorrectas
             });
         }
@@ -367,7 +365,7 @@ app.post('/loginPaciente', async (req, res) => {
                 correoElectronico
             });
         } else {
-            res.status(401).json({ mensaje: 'Credenciales incorrectas' });
+            res.status(200).json({ mensaje: 'Credenciales incorrectas' });
         }
     } catch (err) {
         console.error('Error durante el login:', err.message);
@@ -376,8 +374,8 @@ app.post('/loginPaciente', async (req, res) => {
 });
 
 
-app.get('/obtenerDatosDoctor', async (req, res) => {
-    const {id} = req.body;
+app.post('/obtenerDatosDoctor', async (req, res) => {
+    const { id } = req.body; // Asegúrate de que el ID se envíe en el cuerpo de la solicitud
     try {
         const query = `CALL obtenerDatosDoctorPorId(?)`;
 
@@ -395,6 +393,7 @@ app.get('/obtenerDatosDoctor', async (req, res) => {
         res.status(500).send('Error al procesar la solicitud.');
     }
 });
+
 
 app.post('/obtenerDatosPacientePorDNI', async (req, res) => {
     const { dni } = req.body; // Cambiado de id a dni
@@ -441,6 +440,31 @@ app.post('/obtenerDatosPrescripcion', async (req, res) => {
     } catch (err) {
         console.error('Error al obtener datos de la prescripción:', err.message);
         res.status(500).send('Error al procesar la solicitud.');
+    }
+});
+
+app.post('/ObtenerPacientesPorDoctor', async (req, res) => {
+    const { doctor_id } = req.body;
+
+    if (!doctor_id) {
+        return res.status(400).json({ error: 'El parámetro doctor_id es requerido.' });
+    }
+
+    try {
+        const [rows] = await pool.query('CALL ObtenerPacientesPorDoctor(?)', [doctor_id]);
+
+        // rows[0] contiene el conjunto de resultados de pacientes
+        const pacientes = rows[0]; // Extraemos solo el primer conjunto de resultados
+
+        if (pacientes.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron pacientes para el doctor especificado.' });
+        }
+
+        // Devuelve el conjunto de resultados de pacientes encapsulado en un objeto
+        res.json({ pacientes: pacientes });
+    } catch (error) {
+        console.error('Error al obtener pacientes:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
