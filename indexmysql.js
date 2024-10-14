@@ -468,6 +468,41 @@ app.post('/ObtenerPacientesPorDoctor', async (req, res) => {
     }
 });
 
+// Endpoint para llamar al procedimiento almacenado con fecha única
+app.get('/reportefechaunica', (req, res) => {
+    const { fechaUnica, doctorId, pacienteId } = req.query;
+  
+    if (!fechaUnica || !doctorId || !pacienteId) {
+      return res.status(400).json({ error: 'Se requieren los parámetros fechaUnica, doctorId y pacienteId' });
+    }
+  
+    const sql = `CALL ObtenerDatosReporteFechaUnica(?, ?, ?)`;
+    db.query(sql, [fechaUnica, doctorId, pacienteId], (err, results) => {
+      if (err) {
+        console.error('Error al ejecutar el procedimiento almacenado:', err);
+        return res.status(500).json({ error: 'Error en la base de datos' });
+      }
+      res.json(results);
+    });
+  });
+  
+  // Endpoint para llamar al procedimiento almacenado con rango de fechas
+  app.get('/reporteentrefechas', (req, res) => {
+    const { fechaInicio, fechaFin, doctorId, pacienteId } = req.query;
+  
+    if (!fechaInicio || !fechaFin || !doctorId || !pacienteId) {
+      return res.status(400).json({ error: 'Se requieren los parámetros fechaInicio, fechaFin, doctorId y pacienteId' });
+    }
+  
+    const sql = `CALL ObtenerDatosReporteEntreFechas(?, ?, ?, ?)`;
+    db.query(sql, [fechaInicio, fechaFin, doctorId, pacienteId], (err, results) => {
+      if (err) {
+        console.error('Error al ejecutar el procedimiento almacenado:', err);
+        return res.status(500).json({ error: 'Error en la base de datos' });
+      }
+      res.json(results);
+    });
+  });
 
 
 app.get('/obtenerDatosToma', async (req, res) => {
@@ -513,6 +548,8 @@ app.post('/obtenerPrescripcionesXDoctorFecha', async (req, res) => {
         res.status(500).send('Error al procesar la solicitud.');
     }
 });
+
+
 
 app.post('/obtenerTomasXPacienteFecha', async (req, res) => {
     const { pacienteId, fechaHoy } = req.body;
