@@ -456,7 +456,8 @@ app.post('/ObtenerPacientesPorDoctor', async (req, res) => {
             return res.status(404).json({ message: 'No se encontraron pacientes para el doctor especificado.' });
         }
 
-        res.json(pacientes); // Devuelve solo el conjunto de resultados de pacientes
+        // Devuelve el conjunto de resultados de pacientes encapsulado en un objeto
+        res.json({ pacientes: pacientes });
     } catch (error) {
         console.error('Error al obtener pacientes:', error);
         res.status(500).json({ error: 'Error interno del servidor.' });
