@@ -20,12 +20,12 @@ const pool = mysql.createPool({
 
 // Endpoint para el reporte de fecha única
 app.post('/reportefechaunica', async (req, res) => {
-    const { fechaUnica, doctorId, pacienteId } = req.body;
+    const { fechaUnica, doctorId, pacienteDni } = req.body;
 
     const sql = `CALL ObtenerDatosReporteFechaUnica(?, ?, ?)`;
 
     try {
-        const [results] = await pool.query(sql, [fechaUnica, doctorId, pacienteId]);
+        const [results] = await pool.query(sql, [fechaUnica, doctorId, pacienteDni]);
         // Asumiendo que results devuelve el array descrito:
         const datosReporte = results[0]; // Primer bloque de resultados
         const tratamiento = results[1]; // Segundo bloque de resultados
@@ -44,12 +44,12 @@ app.post('/reportefechaunica', async (req, res) => {
 
 // Endpoint para el reporte entre fechas
 app.post('/reporteentrefechas', async (req, res) => {
-    const { fechaInicio, fechaFin, doctorId, pacienteId } = req.body;
+    const { fechaInicio, fechaFin, doctorId, pacienteDni } = req.body;
 
     const sql = `CALL ObtenerDatosReporteEntreFechas(?, ?, ?, ?)`;
 
     try {
-        const [results] = await pool.query(sql, [fechaInicio, fechaFin, doctorId, pacienteId]);
+        const [results] = await pool.query(sql, [fechaInicio, fechaFin, doctorId, pacienteDni]);
        // Asumiendo que results devuelve el array descrito:
        const datosReporte = results[0]; // Primer bloque de resultados
        const tratamiento = results[1]; // Segundo bloque de resultados
@@ -65,6 +65,7 @@ app.post('/reporteentrefechas', async (req, res) => {
         res.status(500).json({ error: 'Error en la base de datos' });
     }
 });
+
   
 
 // Ruta para hacer un SELECT de la tabla 'sexo'
