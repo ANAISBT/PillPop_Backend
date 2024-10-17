@@ -66,7 +66,79 @@ app.post('/reporteentrefechas', async (req, res) => {
     }
 });
 
-  
+  // Endpoint para el reporte de fecha única
+app.post('/reportefechaunicaPaciente', async (req, res) => {
+    const { fechaUnica, pacienteId } = req.body; // Ahora estamos usando pacienteId en lugar de doctorId
+
+    const sql = `CALL ObtenerDatosReporteFechaUnica_Paciente(?, ?)`;
+
+    try {
+        // Llamamos al procedimiento almacenado con los parámetros adecuados
+        const [results] = await pool.query(sql, [fechaUnica, pacienteId]);
+
+        if (results.length > 0) {
+            // Primer bloque de resultados: Información del paciente y el nombre del mes
+            const datosReporte = results[0];
+
+            // Segundo bloque de resultados: Información de las pastillas y frecuencias
+            const tratamiento = results[1];
+
+            // Tercer bloque de resultados: Información de la toma diaria de pastillas
+            const tomasDiarias = results[2];
+
+            // Respondemos con los datos formateados
+            res.json({
+                datosReporte,
+                tratamiento,
+                tomasDiarias
+            });
+        } else {
+            res.status(404).json({ error: 'No se encontraron datos para el reporte.' });
+        }
+    } catch (err) {
+        console.error('Error al ejecutar el procedimiento almacenado:', err);
+        res.status(500).json({ error: 'Error en la base de datos' });
+    }
+});
+
+// Endpoint para el reporte entre fechas
+app.post('/reporteentrefechasPaciente', async (req, res) => {
+    const { fechaInicio, fechaFin, pacienteId } = req.body; // Ahora usamos pacienteId en lugar de doctorId o pacienteDni
+
+    const sql = `CALL ObtenerDatosReporteEntreFechas_Paciente(?, ?, ?)`;
+
+    try {
+        // Llamamos al procedimiento almacenado con los parámetros adecuados
+        const [results] = await pool.query(sql, [fechaInicio, fechaFin, pacienteId]);
+
+        if (results.length > 0) {
+            // Primer bloque de resultados: Información del paciente y nombres de los meses
+            const datosReporte = results[0];
+            
+            // Combina los nombres del mes de inicio y fin
+            const nombreMes = `${datosReporte[0].NombreMesInicio} - ${datosReporte[0].NombreMesFin}`;
+
+            // Segundo bloque de resultados: Información de las pastillas y frecuencias
+            const tratamiento = results[1];
+
+            // Tercer bloque de resultados: Información de la toma diaria de pastillas
+            const tomasDiarias = results[2];
+
+            // Respondemos con los datos formateados
+            res.json({
+                datosReporte: { ...datosReporte[0], NombreMes: nombreMes }, // Añade el campo NombreMes
+                tratamiento,
+                tomasDiarias
+            });
+        } else {
+            res.status(404).json({ error: 'No se encontraron datos para el reporte.' });
+        }
+    } catch (err) {
+        console.error('Error al ejecutar el procedimiento almacenado:', err);
+        res.status(500).json({ error: 'Error en la base de datos' });
+    }
+});
+
 
 // Ruta para hacer un SELECT de la tabla 'sexo'
 app.get('/getDataSexo', async (req, res) => {
