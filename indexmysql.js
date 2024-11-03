@@ -243,13 +243,13 @@ app.post('/addPrescripcion', async (req, res) => {
 });
 
 app.post('/cambiarTomaA1', async (req, res) => {
-    const { tomaID } = req.body; // Obtener el ID de la toma del cuerpo de la solicitud
+    const { tomaID,p_fecha } = req.body; // Obtener el ID de la toma del cuerpo de la solicitud
 
     try {
-        const query = `CALL CambiarTomaA1(?)`; // Llamar al procedimiento almacenado
+        const query = `CALL CambiarTomaA1(?,?)`; // Llamar al procedimiento almacenado
 
         // Ejecutar el procedimiento almacenado con el parámetro
-        const [result] = await pool.query(query, [tomaID]);
+        const [result] = await pool.query(query, [tomaID,p_fecha]);
 
         res.json({
             mensaje: 'Toma actualizada a 1 exitosamente.',
